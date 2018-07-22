@@ -1,2 +1,2 @@
-Blog app schema challenge solution
+Blog app schema challenge
 ==================================

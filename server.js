@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const { DATABASE_URL, PORT } = require('./config');
-const { Author, BlogPost } = require('./models');
+const { Author, Post } = require('./models');
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.get('/authors', (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: 'something went terribly wrong' });
+      res.status(500).json({ error: 'Internal server error' });
     });
 });
 
@@ -65,13 +65,13 @@ app.post('/authors', (req, res) => {
             }))
           .catch(err => {
             console.error(err);
-            res.status(500).json({ error: 'Something went wrong' });
+            res.status(500).json({ error: 'Internal server error' });
           });
       }
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: 'something went horribly awry' });
+      res.status(500).json({ error: 'Internal server error' });
     });
 });
 
@@ -116,7 +116,7 @@ app.put('/authors/:id', (req, res) => {
 
 
 app.delete('/authors/:id', (req, res) => {
-  BlogPost
+  Post
     .remove({ author: req.params.id })
     .then(() => {
       Author
@@ -128,13 +128,13 @@ app.delete('/authors/:id', (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: 'something went terribly wrong' });
+      res.status(500).json({ error: 'Internal server error' });
     });
 });
 
 
 app.get('/posts', (req, res) => {
-  BlogPost
+  Post
     .find()
     .then(posts => {
       res.json(posts.map(post => {
@@ -148,13 +148,13 @@ app.get('/posts', (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: 'something went terribly wrong' });
+      res.status(500).json({ error: 'Internal server error' });
     });
 });
 
 
 app.get('/posts/:id', (req, res) => {
-  BlogPost
+  Post
     .findById(req.params.id)
     .then(post => {
       res.json({
@@ -167,7 +167,7 @@ app.get('/posts/:id', (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: 'something went horribly awry' });
+      res.status(500).json({ error: 'Internal server error' });
     });
 });
 
@@ -186,7 +186,7 @@ app.post('/posts', (req, res) => {
     .findById(req.body.author_id)
     .then(author => {
       if (author) {
-        BlogPost
+        Post
           .create({
             title: req.body.title,
             content: req.body.content,
@@ -201,7 +201,7 @@ app.post('/posts', (req, res) => {
             }))
           .catch(err => {
             console.error(err);
-            res.status(500).json({ error: 'Something went wrong' });
+            res.status(500).json({ error: 'Internal server error' });
           });
       }
       else {
@@ -212,7 +212,7 @@ app.post('/posts', (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      res.status(500).json({ error: 'something went horribly awry' });
+      res.status(500).json({ error: 'Internal server error' });
     });
 });
 
@@ -232,7 +232,7 @@ app.put('/posts/:id', (req, res) => {
     }
   });
 
-  BlogPost
+  Post
     .findByIdAndUpdate(req.params.id, { $set: updated }, { new: true })
     .then(updatedPost => res.status(200).json({
       id: updatedPost.id,
@@ -244,7 +244,7 @@ app.put('/posts/:id', (req, res) => {
 
 
 app.delete('/posts/:id', (req, res) => {
-  BlogPost
+  Post
     .findByIdAndRemove(req.params.id)
     .then(() => {
       console.log(`Deleted blog post with id \`${req.params.id}\``);
